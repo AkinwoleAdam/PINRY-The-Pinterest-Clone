@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Delete</title>
+  </head>
+  <body>
+    
+    <form method="post" action="">
+  {% csrf_token %}
+  <a href="{{request.META.HTTP_REFERER}}">Go Back</a>
+  <p>Are you sure you want to delete "{{obj}}"</p>
+  <button type="submit">Confirm</button>
+</form>
+
+  </body>
+</html>

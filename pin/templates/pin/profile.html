@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Profile</title>
+</head>
+
+<body>
+  <a href="{% url 'home' %}">Go home</a>
+<h3>{{profile.user.username}}'s Profile</h3>
+<p>{{user.first_name}}</p>
+<p>{{user.last_name}}</p>
+<p>{{user.email}}</p>
+<p> {{profile.bio}}</p>
+{{profile.website_link}}
+<br>
+<br>
+{% if request.user == profile.user %}
+<a href="{% url 'edit_profile' profile.id %}">Edit Profile</a>
+{% endif %}
+<h2>Boards({{boards_count}})</h2>
+{% for board in boards %}
+{% if request.user == profile.user and board.status == 'private' or board.status == 'public' %}
+<a href="{% url 'board' board.id %}">{{board.title}}</a>
+{% elif request.user != profile.user and board.status == 'public' %}
+<a href="{% url 'board' board.id %}">{{board.title}}</a>
+{% endif %}
+{% endfor %}
+
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Board</title>
+    <style>
+    img{
+      width:100%;
+    }
+  </style>
+</head>
+
+<body>
+
+<p>{{board.title}}</p>
+<h4>All pins in this board - {{pin_board_count}}</h4>
+
+{% for pin in pin_board %}
+<a href="{% url 'pin_detail' pin.id %}">
+  {% if pin.extension == '.jpg' %}
+<img src="{{pin.file.url}}" alt="">
+{% elif pin.extension == '.mp4' %}
+<video controls>
+  <source src="{{pin.file.url}}" type="video/mp4">
+</video>
+{% endif %}
+<br>
+<br>
+</a>
+<br>
+<br>
+{% endfor %}
+<br>
+</body>
+
+</html>
