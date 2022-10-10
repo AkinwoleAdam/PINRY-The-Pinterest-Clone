@@ -13,7 +13,13 @@
 </head>
 
 <body>
-
+{% if board.status == 'public' %}
+<div>
+{% if board.user == request.user %}
+<a href="{% url 'edit_board' board.id %}">Edit Board</a>
+<a href="{% url 'delete_board' board.id %}">Delete Board</a>
+{% endif %}
+<p>This board is {{board.status}}</p>
 <p>{{board.title}}</p>
 <h4>All pins in this board - {{pin_board_count}}</h4>
 
@@ -33,6 +39,36 @@
 <br>
 {% endfor %}
 <br>
+</div>
+
+{% elif board.user == request.user and board.status == 'private' %}
+<div>
+<p>This board is {{board.status}}</p>
+<a href="{% url 'edit_board' board.id %}">Edit Board</a>
+<a href="{% url 'delete_board' board.id %}">Delete Board</a>
+<p>{{board.title}}</p>
+<h4>All pins in this board - {{pin_board_count}}</h4>
+
+{% for pin in pin_board %}
+<a href="{% url 'pin_detail' pin.id %}">
+  {% if pin.extension == '.jpg' %}
+<img src="{{pin.file.url}}" alt="">
+{% elif pin.extension == '.mp4' %}
+<video controls>
+  <source src="{{pin.file.url}}" type="video/mp4">
+</video>
+{% endif %}
+<br>
+<br>
+</a>
+<br>
+<br>
+{% endfor %}
+<br>
+</div>
+{% else %}
+ <p>Seems you are lost!</p>
+  {% endif %}
 </body>
 
 </html>

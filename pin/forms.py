@@ -11,12 +11,20 @@ class PinForm(forms.ModelForm):
     super(PinForm, self).__init__(*args, **kwargs)
     self.fields['board'].queryset = Board.objects.filter(user=user)
  
+class EditPinForm(forms.ModelForm):
+  class Meta:
+    model = Pin
+    fields = '__all__'
+    exclude = ['user','board','file']
+ 
+ 
+ 
+ 
 class CommentForm(forms.ModelForm):
   class Meta:
     model = Comment
     fields = '__all__'
     exclude = ['user','pin']
-
 
 class SaveToBoardForm(forms.ModelForm):
   class Meta:
@@ -31,7 +39,7 @@ class BoardForm(forms.ModelForm):
     model = Board
     fields = '__all__'
     exclude = ['user']
-    
+  
 class EditProfileForm(forms.ModelForm):
   class Meta:
     model = Profile

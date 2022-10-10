@@ -5,6 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profile</title>
+  <style>
+    img{
+      width:100%;
+    }
+  </style>
 </head>
 
 <body>
@@ -19,13 +24,53 @@
 <br>
 {% if request.user == profile.user %}
 <a href="{% url 'edit_profile' profile.id %}">Edit Profile</a>
-{% endif %}
 <h2>Boards({{boards_count}})</h2>
+{% else %}
+<h2>Public Boards({{public_boards_count}})</h2>
+{% endif %}
 {% for board in boards %}
 {% if request.user == profile.user and board.status == 'private' or board.status == 'public' %}
 <a href="{% url 'board' board.id %}">{{board.title}}</a>
 {% elif request.user != profile.user and board.status == 'public' %}
 <a href="{% url 'board' board.id %}">{{board.title}}</a>
+{% endif %}
+{% endfor %}
+<br>
+<br>
+{% if profile.user == request.user %}
+<h2>Pins({{pins_count}})</h2>
+{% else %}
+<h2>All Pins</h2>
+{% endif %}
+{% for pin in pins %}
+{% if pin.board.status == 'public' %}
+<a href="{% url 'pin_detail' pin.id %}">
+  {% if pin.extension == '.jpg' %}
+<img src="{{pin.file.url}}" alt="">
+{% elif pin.extension == '.mp4' %}
+<video controls>
+  <source src="{{pin.file.url}}" type="video/mp4">
+</video>
+{% endif %}
+<br>
+<br>
+</a>
+<br>
+<br>
+{% elif profile.user == request.user and pin.board.status == 'private' %}
+<a href="{% url 'pin_detail' pin.id %}">
+  {% if pin.extension == '.jpg' %}
+<img src="{{pin.file.url}}" alt="">
+{% elif pin.extension == '.mp4' %}
+<video controls>
+  <source src="{{pin.file.url}}" type="video/mp4">
+</video>
+{% endif %}
+<br>
+<br>
+</a>
+<br>
+<br>
 {% endif %}
 {% endfor %}
 

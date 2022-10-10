@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Pin - Delete</title>
+        <style>
+    img{
+      width:100%;
+    }
+  </style>
+  </head>
+  <body>
+   <div>
+    <h4>{{pin.date_updated|timesince}} ago</h4>
+  {% if pin.extension == '.jpg' %}
+<img src="{{pin.file.url}}" alt="">
+{% elif pin.extension == '.mp4' %}
+<video controls>
+  <source src="{{pin.file.url}}" type="video/mp4">
+</video>
+{% endif %}
+<p>{{pin.name}}</p>
+<p>{{pin.description}}</p>
+<a href="{% url 'profile' pin.user.profile.id %}">{{pin.user}}</a>
+<br>
+<br>
+{% if pin.board.status == 'public' %}
+<p>From Board <a href="{% url 'board' pin.board.id %}">{{pin.board}}</a></p>
+{% elif pin.board.status == 'private' %}
+{% endif %}
+<br>
+  </div>
+    <form method="post">
+      {% csrf_token %}
+      {{form.as_p}}
+      <button type="submit">Delete Pin</button>
+    </form>
+  </body>
+</html>

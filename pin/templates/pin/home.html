@@ -28,6 +28,7 @@
 <br>
 <a href="{% url 'create_board' %}">Create Board</a>
 <a href="{% url 'account_logout' %}">Logout</a>
+<a href="{% url 'search' %}">Search</a>
 <br>
 <br>
 {% else %}
@@ -45,6 +46,7 @@
 <h3>Popular Pins</h3>
 <div class="container">
 {% for pin in pins %}
+{% if pin.board.status == 'public' %}
 <a href="{% url 'pin_detail' pin.id %}">
   {% if pin.extension == '.jpg' %}
 <img src="{{pin.file.url}}" alt="">
@@ -58,6 +60,7 @@
 </a>
 <br>
 <br>
+{% endif %}
 {% endfor %}
 <br>
 </div>

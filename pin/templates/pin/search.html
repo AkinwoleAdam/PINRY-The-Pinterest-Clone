@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>Search - Pins and Boards</title>
+  </head>
+  <body>
+    <div>
+    <form method="get">
+        <input type="text" name="q"/>
+      <button type="submit">Search</button>
+    </form>
+    {% if pins %}
+    {% for pin in pins %}
+    
+    <h2>{{pin.title}}</h2>
+    
+    {% empty %}
+    <h2>No search results for </h2>
+    {% endfor %}
+    {% endif %}
+    </div>
+  </body>
+</html>
