@@ -14,22 +14,22 @@ def home(request):
   context = {'pins':pins}
   return render(request,'pin/home.html',context)
  
- 
- 
 def search(request):
   pins = Pin.objects.all()
   boards = Board.objects.filter(status='public')
-  q = request.GET.get('q')
-  if q:
-    pins = Pin.objects.filter(Q(name__icontains=q) | Q(description__icontains=q))
-    context = {'pins':pins}
+  if request.method == 'GET':
+    query = request.GET.get('q')
+    submitbutton = request.GET.get('submit')
+    if query is not None:
+      lookups = Q(name__icontains=query) | Q(description__icontains=query)
+      results = Pin.objects.filter(lookups).distinct()
+      context={'results': results,'submitbutton': submitbutton}
+      return render(request, 'pin/search.html', context)
+    else:
+      return render(request, 'pin/search.html')
   else:
-    q = ''
-  return render(request,'pin/search.html',context)
+    return render(request, 'pin/search.html')
  
- 
- 
-
 @login_required(login_url='login')
 def createPin(request):
   form = PinForm(request.user)

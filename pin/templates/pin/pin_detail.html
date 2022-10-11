@@ -13,7 +13,8 @@
 </head>
 
 <body>
-  <a href="{% url 'home' %}">Go back</a>
+  <a href="{{request.META.HTTP_REFERER}}">Go back</a>
+  <a href="{% url 'home' %}">Go home</a>
   <br>
   <br>
 {% if pin.board.status == 'public' %}

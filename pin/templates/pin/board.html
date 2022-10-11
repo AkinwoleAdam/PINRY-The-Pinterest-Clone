@@ -13,6 +13,9 @@
 </head>
 
 <body>
+  <a href="{{request.META.HTTP_REFERER}}">Go Back</a>
+  <br>
+  <br>
 {% if board.status == 'public' %}
 <div>
 {% if board.user == request.user %}

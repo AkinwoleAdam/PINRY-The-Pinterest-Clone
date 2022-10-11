@@ -13,8 +13,14 @@
 </head>
 
 <body>
+   <a href="{{request.META.HTTP_REFERER}}">Go back</a>
+  <br>
   <a href="{% url 'home' %}">Go home</a>
+{% if request.user == profile.user %}
+<h3>Your Profile</h3>
+{% else %}
 <h3>{{profile.user.username}}'s Profile</h3>
+{% endif %}
 <p>{{user.first_name}}</p>
 <p>{{user.last_name}}</p>
 <p>{{user.email}}</p>

@@ -17,9 +17,6 @@ class EditPinForm(forms.ModelForm):
     fields = '__all__'
     exclude = ['user','board','file']
  
- 
- 
- 
 class CommentForm(forms.ModelForm):
   class Meta:
     model = Comment

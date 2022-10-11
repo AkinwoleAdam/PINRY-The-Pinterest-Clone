@@ -6,19 +6,29 @@
   </head>
   <body>
     <div>
-    <form method="get">
-        <input type="text" name="q"/>
-      <button type="submit">Search</button>
-    </form>
-    {% if pins %}
-    {% for pin in pins %}
-    
-    <h2>{{pin.title}}</h2>
-    
-    {% empty %}
-    <h2>No search results for </h2>
-    {% endfor %}
-    {% endif %}
+ <form method="GET" value="{{request.GET.q}}">
+   <input type="text" name="q" value="{{request.GET.q}}" placeholder="Search Pins"/>
+<input type="submit" name="submit" value="Search"/>
+</form>
+
+{% if submitbutton == 'Search' and request.GET.q != '' %}
+{% if results %}
+<h1>Results for <b>"{{ request.GET.q }}"</b></h1>
+<br/><br/>
+
+{% for result in results %}
+
+{{result.name}}
+<br/>
+
+{{result.description}}
+<br/>
+
+{% endfor %}
+{% else %}
+No search results for this query
+{% endif %}
+{% endif %}
     </div>
   </body>
 </html>

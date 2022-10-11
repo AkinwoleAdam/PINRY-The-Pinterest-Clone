@@ -8,6 +8,10 @@
 </head>
 
 <body>
+<a href="{% url 'home' %}">Go Back</a>
+<br>
+<br>
+<h2>Boards</h2>
 {% for board in boards %}
 
 <a href="{% url 'board' board.id %}">{{board.title}}</a>
