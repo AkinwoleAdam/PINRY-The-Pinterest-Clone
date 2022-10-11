@@ -29,7 +29,7 @@ urlpatterns = [
   
   path('pin/delete/<str:pk>',views.deletePin,name='delete_pin'),
   
-  path('comment/delete/<str:pk>',views.DeleteComment,name='delete'),
+  path('comment/delete/<str:pk>',views.DeleteComment,name='delete_comment'),
   ]
   
 handler404 = 'pin.views.error_404'

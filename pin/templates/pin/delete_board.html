@@ -11,6 +11,11 @@
   </head>
   <body>
 <div>
+  {% if messages %}
+{% for message in messages %}
+<p>{{message}}</p>
+{% endfor %}
+{% endif %}
 <p>This board is {{board.status}}</p>
 <h2>Title</h2>
 <h3>{{board.title}}</h3>

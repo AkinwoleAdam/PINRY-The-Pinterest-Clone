@@ -12,11 +12,20 @@
   </style>
   <body>
 <div>
+  <br>
+  <a href="{% url 'pin_detail' pin.id %}">Go back to pin</a>
   <h4>{{pin.date_updated|timesince}} ago</h4>
+  
+{% if messages %}
+{% for message in messages %}
+<p>{{message}}</p>
+{% endfor %}
+{% endif %}
+
   <h3>Pin File</h3>
-  {% if pin.extension == '.jpg' %}
+{% if pin.get_type == 'image' %}
 <img src="{{pin.file.url}}" alt="">
-{% elif pin.extension == '.mp4' %}
+{% elif pin.get_type == 'video' %}
 <video controls>
   <source src="{{pin.file.url}}" type="video/mp4">
 </video>

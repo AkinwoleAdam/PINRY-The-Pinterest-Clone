@@ -2,33 +2,56 @@
 <html>
   <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <title>Search - Pins and Boards</title>
+  <title>Search - Pins</title>
+    <style>
+    img{
+      width:100%;
+    }
+    .container{
+      display:flex;
+      flex-direction:column;
+    }
+  </style>
   </head>
   <body>
     <div>
+      <br>
+<a href="{% url 'home' %}">Go home</a>
+  <br>
+  <br>
  <form method="GET" value="{{request.GET.q}}">
    <input type="text" name="q" value="{{request.GET.q}}" placeholder="Search Pins"/>
 <input type="submit" name="submit" value="Search"/>
 </form>
 
 {% if submitbutton == 'Search' and request.GET.q != '' %}
-{% if results %}
-<h1>Results for <b>"{{ request.GET.q }}"</b></h1>
-<br/><br/>
-
-{% for result in results %}
-
-{{result.name}}
-<br/>
-
-{{result.description}}
-<br/>
-
+{% if pins_results %}
+<h1>Results for <b>"{{ request.GET.q }}"</b>
+</h1>
+<div class="container">
+{% for pin in pins_results %}
+{% if pin.board.status == 'public' %}
+<a href="{% url 'pin_detail' pin.id %}">
+{% if pin.get_type == 'image' %}
+<img src="{{pin.file.url}}" alt="">
+{% elif pin.get_type == 'video' %}
+<video controls>
+  <source src="{{pin.file.url}}" type="video/mp4">
+</video>
+{% endif %}
+<br>
+<br>
+</a>
+<br>
+<br>
+{% endif %}
 {% endfor %}
+<br>
+</div>
 {% else %}
-No search results for this query
+<p>No result for that query</p>
 {% endif %}
 {% endif %}
-    </div>
+</div>
   </body>
 </html>

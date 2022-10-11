@@ -16,6 +16,11 @@
    <a href="{{request.META.HTTP_REFERER}}">Go back</a>
   <br>
   <a href="{% url 'home' %}">Go home</a>
+{% if messages %}
+{% for message in messages %}
+<p>{{message}}</p>
+{% endfor %}
+{% endif %}
 {% if request.user == profile.user %}
 <h3>Your Profile</h3>
 {% else %}
@@ -51,9 +56,9 @@
 {% for pin in pins %}
 {% if pin.board.status == 'public' %}
 <a href="{% url 'pin_detail' pin.id %}">
-  {% if pin.extension == '.jpg' %}
+{% if pin.get_type == 'image' %}
 <img src="{{pin.file.url}}" alt="">
-{% elif pin.extension == '.mp4' %}
+{% elif pin.get_type == 'video' %}
 <video controls>
   <source src="{{pin.file.url}}" type="video/mp4">
 </video>
@@ -65,9 +70,9 @@
 <br>
 {% elif profile.user == request.user and pin.board.status == 'private' %}
 <a href="{% url 'pin_detail' pin.id %}">
-  {% if pin.extension == '.jpg' %}
+{% if pin.get_type == 'image' %}
 <img src="{{pin.file.url}}" alt="">
-{% elif pin.extension == '.mp4' %}
+{% elif pin.get_type == 'video' %}
 <video controls>
   <source src="{{pin.file.url}}" type="video/mp4">
 </video>

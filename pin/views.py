@@ -3,7 +3,6 @@ from .models import *
 from .forms import PinForm,EditProfileForm,UserUpdateForm,BoardForm,CommentForm,SaveToBoardForm,EditPinForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login,logout,authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
@@ -14,38 +13,38 @@ def home(request):
   context = {'pins':pins}
   return render(request,'pin/home.html',context)
  
+@login_required(login_url='account_login') 
 def search(request):
-  pins = Pin.objects.all()
-  boards = Board.objects.filter(status='public')
   if request.method == 'GET':
     query = request.GET.get('q')
     submitbutton = request.GET.get('submit')
     if query is not None:
       lookups = Q(name__icontains=query) | Q(description__icontains=query)
-      results = Pin.objects.filter(lookups).distinct()
-      context={'results': results,'submitbutton': submitbutton}
+      pins_results = Pin.objects.filter(lookups).distinct()
+      context={'pins_results': pins_results,'submitbutton': submitbutton}
       return render(request, 'pin/search.html', context)
     else:
       return render(request, 'pin/search.html')
   else:
     return render(request, 'pin/search.html')
  
-@login_required(login_url='login')
+@login_required(login_url='account_login')
 def createPin(request):
   form = PinForm(request.user)
   if request.method == "POST":
-    form = PinForm(request.POST,request.FILES,request.user)
+    form = PinForm(request.user,request.POST,request.FILES)
     if form.is_valid():
       pin = form.save(commit=False)
       pin.user = request.user
       pin.save()
+      messages.success(request,'Pin created successfully!')
       return redirect('home')
   context = {'form':form}
   return render(request,'pin/create_pin.html',context)
   
 @login_required(login_url='account_login')
 def pinDetail(request,pk):
-  pin = Pin.objects.get(id=pk)
+  pin = Pin.objects.get(id=pk) 
   comments = pin.comments.all()
   form = CommentForm()
   if request.method == 'POST':
@@ -55,11 +54,12 @@ def pinDetail(request,pk):
       comment.user = request.user
       comment.pin = pin
       comment.save()
+      messages.success(request,'Your comment was submitted!')
       return redirect('pin_detail',pin.id)
   context = {'pin':pin,'comments':comments,'form':form}
   return render(request,'pin/pin_detail.html',context)
 
-@login_required(login_url='login')  
+@login_required(login_url='account_login')  
 def editPin(request,pk):
   try:
     pin = Pin.objects.get(id=pk,user=request.user)
@@ -72,11 +72,12 @@ def editPin(request,pk):
       instance = form.save(commit=False)
       instance.user = request.user
       instance.save()
+      messages.success(request,'Pin was changed successfully!')
       return redirect(request.META.get('HTTP_REFERER'))
   context = {'pin':pin,'form':form}
   return render(request,'pin/edit_pin.html',context)
 
-@login_required(login_url='login')  
+@login_required(login_url='account_login')  
 def deletePin(request,pk):
   try:
     pin = Pin.objects.get(id=pk,user=request.user)
@@ -84,27 +85,28 @@ def deletePin(request,pk):
     return render(request,'pin/404.html')
   if request.method == "POST":
     pin.delete()
+    messages.success(request,'Pin was deleted successfully!')
     return redirect('home')
   context = {'pin':pin}
   return render(request,'pin/delete_pin.html',context)
 
-@login_required(login_url='login')  
+@login_required(login_url='account_login')  
 def DeleteComment(request,pk):
-  pin = Pin.objects.get(id=pk)
   comment = Comment.objects.get(id=pk)
   if request.method == "POST":
     comment.delete()
-    return redirect('pin_detail',comment.pin.id)
-  context = {'obj':comment,'pin':pin}
+    messages.success(request,'Your comment was deleted successfully!')
+    return redirect('home')
+  context = {'obj':comment}
   return render(request,'pin/delete.html',context)
 
-@login_required(login_url='login') 
+@login_required(login_url='account_login') 
 def AllBoards(request):
   boards = Board.objects.filter(status='public')
   context = {'boards':boards}
   return render(request,'pin/boards.html',context)
   
-@login_required(login_url='login')
+@login_required(login_url='account_login')
 def CreateBoard(request):
   form = BoardForm()
   if request.method == "POST":
@@ -113,11 +115,12 @@ def CreateBoard(request):
       board = form.save(commit=False)
       board.user = request.user
       board.save()
+      messages.success(request,'Board was created successfully!')
       return redirect('home')
   context = {'form':form}
   return render(request,'pin/create_board.html',context)
   
-@login_required(login_url='login')
+@login_required(login_url='account_login')
 def BoardDetail(request,pk):
   board = Board.objects.get(id=pk)
   pin = Pin.objects.get(id=pk)
@@ -126,7 +129,7 @@ def BoardDetail(request,pk):
   context = {'board':board,'pin_board':pin_board,'pin':pin,'pin_board_count':pin_board_count}
   return render(request,'pin/board.html',context)
  
-@login_required(login_url='login')  
+@login_required(login_url='account_login')  
 def editBoard(request,pk):
   try:
     board = Board.objects.get(id=pk,user=request.user)
@@ -139,11 +142,12 @@ def editBoard(request,pk):
       board = form.save(commit=False)
       board.user = request.user
       board.save()
+      messages.success(request,'Board was edited successfully!')
       return redirect('all_boards')
   context = {'board':board,'form':form}
   return render(request,'pin/edit_board.html',context)
 
-@login_required(login_url='login')  
+@login_required(login_url='account_login')  
 def deleteBoard(request,pk):
   try:
     board = Board.objects.get(id=pk,user=request.user)
@@ -151,9 +155,11 @@ def deleteBoard(request,pk):
     return render(request,'pin/404.html')
   if request.method == "POST":
     board.delete()
+    messages.success(request,'Board was deleted successfully!')
     return redirect('all_boards')
   context = {'board':board}
-  return render(request,'pin/delete_board.html',context)  
+  return render(request,'pin/delete_board.html',context)
+  
   
 @login_required(login_url='account_login')  
 def UserProfile(request,pk):
@@ -168,7 +174,7 @@ def UserProfile(request,pk):
   context = {'profile':profile,'user':user,'boards':boards,'boards_count':boards_count,'pins':pins,'pins_count':pins_count,'public_boards':public_boards,'public_boards_count':public_boards_count}
   return render(request,'pin/profile.html',context)
   
-@login_required(login_url='login')  
+@login_required(login_url='account_login')  
 def editProfile(request,pk):
   profile = Profile.objects.get(id=pk)
   user = User.objects.get(profile=pk)
@@ -180,6 +186,7 @@ def editProfile(request,pk):
     if form.is_valid() and user_form.is_valid():
       form.save()
       user_form.save()
+      messages.success(request,'Changes were made successfully!')
       return redirect('profile',profile.id)
   context = {'profile':profile,'form':form,'user_form':user_form}
   return render(request,'pin/edit_profile.html',context)

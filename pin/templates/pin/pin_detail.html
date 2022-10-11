@@ -13,16 +13,21 @@
 </head>
 
 <body>
-  <a href="{{request.META.HTTP_REFERER}}">Go back</a>
-  <a href="{% url 'home' %}">Go home</a>
+<a href="{{request.META.HTTP_REFERER}}">Go back</a>
+<a href="{% url 'home' %}">Go home</a>
   <br>
-  <br>
+  {% if messages %}
+{% for message in messages %}
+<p>{{message}}</p>
+{% endfor %}
+{% endif %}
+
 {% if pin.board.status == 'public' %}
     <div>
     <h4>{{pin.date_updated|timesince}} ago</h4>
-  {% if pin.extension == '.jpg' %}
+{% if pin.get_type == 'image' %}
 <img src="{{pin.file.url}}" alt="">
-{% elif pin.extension == '.mp4' %}
+{% elif pin.get_type == 'video' %}
 <video controls>
   <source src="{{pin.file.url}}" type="video/mp4">
 </video>
@@ -37,6 +42,7 @@
 {% endif %}
 <form method="post">
   {% csrf_token %}
+  {{save_form.as_p}}
   <button>Save Pin</button>
 </form>
 <br>
@@ -51,7 +57,7 @@
 
 <a href="{% url 'profile' comment.user.profile.id %}">{{comment.user}}</a>
 {% if comment.user == request.user %}
- <a href="{% url 'delete' comment.id %}">remove</a>
+ <a href="{% url 'delete_comment' comment.id %}">remove</a>
  {% endif %}
 <p>{{comment.body}}</p>
 <hr>
@@ -70,9 +76,9 @@
 {% elif pin.user == request.user and pin.board.status == 'private' %}
   <div>
     <h4>{{pin.date_updated|timesince}} ago</h4>
-  {% if pin.extension == '.jpg' %}
+{% if pin.get_type == 'image' %}
 <img src="{{pin.file.url}}" alt="">
-{% elif pin.extension == '.mp4' %}
+{% elif pin.get_type == 'video' %}
 <video controls>
   <source src="{{pin.file.url}}" type="video/mp4">
 </video>

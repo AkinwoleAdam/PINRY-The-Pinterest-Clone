@@ -13,10 +13,10 @@
 </head>
 
 <body>
+{% if board.status == 'public' %}
   <a href="{{request.META.HTTP_REFERER}}">Go Back</a>
   <br>
   <br>
-{% if board.status == 'public' %}
 <div>
 {% if board.user == request.user %}
 <a href="{% url 'edit_board' board.id %}">Edit Board</a>
@@ -28,9 +28,9 @@
 
 {% for pin in pin_board %}
 <a href="{% url 'pin_detail' pin.id %}">
-  {% if pin.extension == '.jpg' %}
+{% if pin.get_type == 'image' %}
 <img src="{{pin.file.url}}" alt="">
-{% elif pin.extension == '.mp4' %}
+{% elif pin.get_type == 'video' %}
 <video controls>
   <source src="{{pin.file.url}}" type="video/mp4">
 </video>
@@ -54,9 +54,9 @@
 
 {% for pin in pin_board %}
 <a href="{% url 'pin_detail' pin.id %}">
-  {% if pin.extension == '.jpg' %}
+{% if pin.get_type == 'image' %}
 <img src="{{pin.file.url}}" alt="">
-{% elif pin.extension == '.mp4' %}
+{% elif pin.get_type == 'video' %}
 <video controls>
   <source src="{{pin.file.url}}" type="video/mp4">
 </video>
@@ -70,6 +70,8 @@
 <br>
 </div>
 {% else %}
+ <a href="{% url 'home' %}">Go Home</a>
+  <br>
  <p>Seems you are lost!</p>
   {% endif %}
 </body>

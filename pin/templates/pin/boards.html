@@ -12,6 +12,11 @@
 <br>
 <br>
 <h2>Boards</h2>
+{% if messages %}
+{% for message in messages %}
+<p>{{message}}</p>
+{% endfor %}
+{% endif %}
 {% for board in boards %}
 
 <a href="{% url 'board' board.id %}">{{board.title}}</a>

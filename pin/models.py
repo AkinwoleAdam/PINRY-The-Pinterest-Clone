@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-import os
+from mimetypes import guess_type
+
 # Create your models here.
 
 status = (('private','private'),('public','public'))
@@ -30,9 +31,13 @@ class Pin(models.Model):
   def __str__(self):
     return self.name
     
-  def extension(self):
-    name, extension = os.path.splitext(self.file.name)
-    return extension
+  def get_type(self):
+    file_type = guess_type(self.file.url, strict=True)[0]
+    # file_type might be ('video/mp4', None) or ('image/jpeg..etc', None)
+    if 'video' in file_type:
+      return 'video'
+    elif 'image' in file_type:
+      return 'image'
   
   class Meta:
     ordering = ['-date_updated','-date_created']
