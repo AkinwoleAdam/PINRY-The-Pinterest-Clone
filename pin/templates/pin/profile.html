@@ -9,6 +9,9 @@
     img{
       width:100%;
     }
+    video{
+      width:100%;
+    }
   </style>
 </head>
 
@@ -30,7 +33,7 @@
 <p>{{user.last_name}}</p>
 <p>{{user.email}}</p>
 <p> {{profile.bio}}</p>
-{{profile.website_link}}
+ <a href="{{profile.website_link}}">{{profile.website_link}}</a>
 <br>
 <br>
 {% if request.user == profile.user %}
